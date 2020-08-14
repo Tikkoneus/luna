@@ -16,7 +16,13 @@
 
 #include <luna/types.h>
 #include <luna/router.h>
-#include <sys/socket.h>
+
+#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32__))
+//#include <sys/socket.h>
+#else
+#  include <sys/socket.h>
+#endif
+
 #include <functional>
 #include <microhttpd.h>
 #include <memory>

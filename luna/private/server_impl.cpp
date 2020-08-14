@@ -12,7 +12,11 @@
 // Copyright © 2016–2018 D.E. Goodman-Wilson
 //
 
+#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32__))
+#include <WinSock2.h> // must be included before Windows.h
+#else
 #include <arpa/inet.h>
+#endif
 #include "luna/private/server_impl.h"
 
 namespace luna
@@ -75,9 +79,11 @@ bool server::server_impl::start(uint16_t port)
 
 bool server::server_impl::start_async(uint16_t port)
 {
+    bool retval = false;
     port_ = port;
 
-    MHD_OptionItem options[options_.size() + 1];
+    // declaring options on the stack with a non-constant size is a non-standard GCC extension and should be avoided
+    MHD_OptionItem * options = new MHD_OptionItem[options_.size() + 1];
     uint16_t idx = 0;
     for (const auto &opt : options_)
     {
@@ -101,7 +107,7 @@ bool server::server_impl::start_async(uint16_t port)
     else if (ssl_mem_cert_set_ || ssl_mem_key_set_)
     {
         LOG_FATAL("Please provide both server::https_mem_key AND server::https_mem_cert");
-        return false;
+        goto cleanup;
     }
 
     if (use_thread_per_connection_)
@@ -139,13 +145,17 @@ bool server::server_impl::start_async(uint16_t port)
     {
         LOG_FATAL(server_name_ + " server failed to start (are you already running something on port " + std::to_string(port_) +
                   "?)"); //TODO set some real error flags perhaps?
-        return false;
+        goto cleanup;
     }
     running_cv_.notify_all(); //daemon_ has changed value
 
     LOG_INFO(server_name_ + " server created on port " + std::to_string(port_));
 
-    return true;
+    retval = true;
+
+cleanup:
+    delete options;
+    return retval;
 }
 
 

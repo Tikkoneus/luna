@@ -16,6 +16,11 @@
 #include <regex>
 #include <base64/base64.h>
 
+#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32__))
+#include <string.h>
+#define strcasecmp _stricmp
+#endif
+
 namespace luna
 {
 

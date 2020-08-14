@@ -163,7 +163,11 @@ response_renderer::from_file_(const request &request, response &response)
     auto stat_ret = stat(filename.c_str(), &st);
 
 
+#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32__))
+    if (st.st_mode & _S_IFDIR)
+#else
     if (S_ISDIR(st.st_mode))
+#endif
     {
         if (filename[filename.size() - 1] != '/')
         {

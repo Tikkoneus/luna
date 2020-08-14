@@ -12,13 +12,19 @@
 // Copyright © 2016–2018 D.E. Goodman-Wilson
 //
 
+#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32__))
+#include <WinSock2.h> // must be included before Windows.h
+#else
+#include <arpa/inet.h>
+#endif
 #include "server.h"
 #include "server_impl.h"
 #include <algorithm>
 #include <iomanip>
 #include <fstream>
 #include <sys/stat.h>
-#include <arpa/inet.h>
+
+
 #include "luna/private/server_impl.h"
 #include "luna/config.h"
 #include "luna/optional.hpp"

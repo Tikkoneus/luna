@@ -17,6 +17,9 @@
 
 #include <chrono>
 #include <string>
+#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32__))
+#include <ctime>
+#endif
 
 namespace luna
 {

@@ -19,6 +19,10 @@
 #include <stack>
 #include <algorithm>
 
+#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32__))
+#define and &&
+#define not !
+#endif
 
 namespace luna
 {

@@ -21,6 +21,11 @@
 namespace luna
 {
 
+#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32__))
+    // enum constant that is already a defined pre-processor macro will result in C2143 and C2059 
+    // c.f. https://docs.microsoft.com/en-us/cpp/error-messages/compiler-errors-1/compiler-error-c2059?view=vs-2019
+#undef ERROR
+#endif
 enum class log_level
 {
     FATAL = 0,
